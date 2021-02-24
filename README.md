@@ -1,4 +1,4 @@
 # pilightpaint
 
-This is a light painting stick base on Adafruit light painting stick and Pixelstick
+This is a light painting GUI for  Adafruit light painting stick and inspired by Pixelstick
 
