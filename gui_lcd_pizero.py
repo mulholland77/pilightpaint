@@ -9,15 +9,15 @@ import subprocess
 import sys
 import os
 import DotStarPiPainterGui as dot
+import animation1 as ani
 from PIL import Image,ImageDraw,ImageFont
 #import bluetooth
 #import bluetoothDot as bluet
 
-b = 0
 bluetoothStatus = 'off'
+b = 0
 level = 0
 mem = 0
-UPS = 1 # 1 = UPS Lite connected / 0 = No UPS Lite hat
 SCNTYPE = 1 # 1= OLED #2 = TERMINAL MODE BETA TESTS VERSION
 iterate = 'OFF'
 
@@ -26,9 +26,12 @@ iterate = 'OFF'
 font = ImageFont.truetype("/home/pi/python3/Tahoma.ttf", 25, encoding="unic")
 font2 = ImageFont.truetype("/home/pi/python3/Tahoma.ttf", 60, encoding="unic")
 font3 = ImageFont.truetype("/home/pi/python3/Tahoma.ttf", 120, encoding="unic")
+fonta = ImageFont.truetype("/home/pi/python3/fontawesome-regular.ttf", 25, encoding="unic")
+
 color1 = 'yellow'
 color2 = 'black'
 color3 = 'cyan'
+color4 = 'blue'
 
 # Create blank image for drawing.
 # Make sure to create image with mode '1' for 1-bit color.
@@ -97,53 +100,96 @@ def DisplayText(l1,l2,l3,l4,l5,l6,l7,l8):
             draw.text((0, line6), l6, font=font, fill=color1)
             draw.text((0, line7), l7, font=font, fill=color1)
             draw.text((0, line8), l8, font=font, fill=color1)
+            
+            if page == 0 and curseur != 0:
+                draw.line([(5,line2),(235,line2)],fill=color1, width=2, joint=None)
             if 0 == l1.find('>',0,1):
                 l1 = l1.replace(">"," ",1)
-                draw.rectangle((0, 0, 240, 30), outline=None, width=0, fill="blue")
+                draw.rectangle((0, 0, 240, 28), outline=None, width=0, fill=color4)
                 draw.text((0, line1), l1, font=font, outline=0,fill="white")
             if 0 == l2.find('>',0,1):
                 l2 = l2.replace(">"," ",1)
-                draw.rectangle((0, 30, 240, 60), outline=None, width=0, fill="blue")
+                draw.rectangle((0, 30, 240, 58), outline=None, width=0, fill=color4)
                 draw.text((0, line2), l2, font=font, outline=0,fill="white")
             if 0 == l3.find('>',0,1):
                 l3 = l3.replace(">"," ",1)
-                draw.rectangle((0, 60, 240, 90), outline=None, width=0, fill="blue")
+                draw.rectangle((0, 60, 240, 88), outline=None, width=0, fill=color4)
                 draw.text((0, line3), l3, font=font, outline=0,fill="white")
             if 0 == l4.find('>',0,1):
                 l4 = l4.replace(">"," ",1)
-                draw.rectangle((0, 90, 240, 120), outline=None, width=0, fill="blue")
+                draw.rectangle((0, 90, 240, 118), outline=None, width=0, fill=color4)
                 draw.text((0, line4), l4, font=font, outline=0,fill="white")
             if 0 == l5.find('>',0,1):
                 l5 = l5.replace(">"," ",1)
-                draw.rectangle((0, 120, 240, 150), outline=None, width=0, fill="blue")
+                draw.rectangle((0, 120, 240, 148), outline=None, width=0, fill=color4)
                 draw.text((0, line5), l5, font=font, outline=0,fill="white")
             if 0 == l6.find('>',0,1):
                 l6 = l6.replace(">"," ",1)
-                draw.rectangle((0, 150, 240, 180), outline=None, width=0, fill="blue")
+                draw.rectangle((0, 150, 240, 178), outline=None, width=0, fill=color4)
                 draw.text((0, line6), l6, font=font, outline=0,fill="white")
             if 0 == l7.find('>',0,1):
                 l7 = l7.replace(">"," ",1)
-                draw.rectangle((0, 180, 240, 210), outline=None, width=0, fill="blue")
+                draw.rectangle((0, 180, 240, 208), outline=None, width=0, fill=color4)
                 draw.text((0, line7), l7, font=font, outline=0,fill="white")
             if 0 == l8.find('>',0,1):
                 l8 = l8.replace(">"," ",1)
-                draw.rectangle((0, 210, 240, 240), outline=None, width=0, fill="blue")
+                draw.rectangle((0, 210, 240, 238), outline=None, width=0, fill=color4)
                 draw.text((0, line8), l8, font=font, outline=0,fill="white")
+
         device.ShowImage(image1,0,0)
     if SCNTYPE == 2:
-            os.system('clear')
+        os.system('clear')
+
+def DisplayFile(l1,l2,l3,l4,l5,l6,l7,l8):
+    top = -2
+    # simple routine to display 7 lines of text
+    if SCNTYPE == 1:
+        image1 = Image.new("RGB", (device.width, device.height), color2)
+        icon = chr(0xf114)
+        icon2 = chr(0xf115) #open
+        icon3 = chr(0xf03e) #image
+        draw = ImageDraw.Draw(image1)
+        for li in [l1,l2,l3,l4,l5,l6,l7,l8]:
+            if 0 == li.find('>',0,1):
+                draw.rectangle((0, top, 240, top+28), outline=None, width=0, fill=color4)
+            if -1 != li.find('*'):
+                if -1!=li.find('>',0,1):
+                    draw.text((0, top), icon2, font=fonta, fill=color1)
+                else:
+                    draw.text((0, top), icon, font=fonta, fill=color1)
+                li = li.replace('*','   ')
+            else:
+                li = '   '+li
+                #draw.text((0, top), icon3, font=fonta, fill=color1)
+            if -1 != li.find('>'):
+                li = li.replace('>',' ',1)            
+            draw.text((0, top), li, font=font, outline=0,fill=color1)
+            top+=30
+        device.ShowImage(image1,0,0)
+    if SCNTYPE == 2:
+        os.system('clear')
+
+
+
+def folder_icon(x,y):
+    draw.line([(x,y),(x,y+26)],fill=color1, width=1, joint=None)
+    draw.line([(x,y+26),(x+30,y+26)],fill=color1, width=1, joint=None)
 def switch_menu(argument):
     if dot.countdown == 0:
         val1 = 'OFF'
     else:
         val1 = str(dot.countdown)
+    if dot.vflip == 'false':
+        val2 = 'OFF'
+    else:
+        val2 = 'ON'
     switcher = {
-        0: "_FILE  "+dot.filename[dot.imgNum],
+        0: "_"+os.path.splitext(dot.filename[dot.imgNum])[0]+" >", #display name file whitout ext
         1: "_BRIGHTNESS  "+str(int(dot.power_value/1450*100)) +"%",
         2: "_SPEED             "+str(round(dot.duration))+" s",
         3: "_COUNTDOWN   "+val1+" s",
         4: "_DIRECTION     "+dot.direct,
-        5: "_VERT. FLIP      "+dot.vflip,        
+        5: "_VERT. FLIP       "+val2,        
         6: "_ADVANCED",
         7: "_OPTIONS",  #fin menu principal
         8: "_FILE INFO",
@@ -162,12 +208,12 @@ def switch_menu(argument):
         21: "_SYSTEM SHUTDOWN",
         22: "_BLUETOOTH",
         23: "_ABOUT",
-        24: "_RAINBOW",
-        25: "_COLORS",
-        26: "_MAGENTA",
-        27: "_ORANGE",
-        28: "_BLACK",
-        29: "_",
+        24: "_COLORCYCLE",
+        25: "_RAINBOW",
+        26: "_SPARKLE",
+        27: "_MAGENTA",
+        28: "_RAINBOW SPARKLE",
+        29: "_RAINBOW 2",
         30: "_",
         31: "_",
         32: "_",
@@ -195,7 +241,7 @@ def about():
         "",
         "Pi Light Paint",
         "Pizero ",
-        "V 1.0 01/2021",
+        "V 1.1 02/2021",
         "",
         "dbriand77@gmail.com",
         "",
@@ -220,12 +266,11 @@ def LCDContrast(contrast):
                         draw.polygon([(100, 80), (120, 50), (140, 80)], outline=color1, fill=color1)  #Up filled
                         if contrast<1:
                             contrast += 0.1
-
                 if not KEY_DOWN_PIN.is_pressed: # button is released
                         draw.polygon([(140, 160), (120, 190), (100, 160)], outline=color1, fill=0) #down
                 else: # button is pressed:
                         draw.polygon([(140, 160), (120, 190), (100, 160)], outline=color1, fill=color1) #down filled
-                        if contrast>0:
+                        if contrast>0.2:
                             contrast -= 0.1
                 draw.text((10, 1), 'LCD CONTRAST',  font=font, fill=color1)
                 draw.line([(5,35),(235,35)],fill=color1, width=3, joint=None)
@@ -406,7 +451,7 @@ def FileSelect(chemin,pos):
     maxi+=subfolders
     cur=pos+subfolders
     mem = pos
-    arrow = [item+'>' if item != '..' else item for item in directories ]
+    arrow = ['*'+item if item != '..' else item for item in directories]
     allfiles = arrow + dot.filename
     while not KEY_LEFT_PIN.is_pressed:
         #on boucle
@@ -467,7 +512,7 @@ def FileSelect(chemin,pos):
                 lastButtonState = 1
                 FileSelect(dot.path,0)
                 return(dot.path,mem)
-        DisplayText(ligne[0],ligne[1],ligne[2],ligne[3],ligne[4],ligne[5],ligne[6],ligne[7])
+        DisplayFile(ligne[0],ligne[1],ligne[2],ligne[3],ligne[4],ligne[5],ligne[6],ligne[7])
         #time.sleep(0.04)
     return(chemin,pos)
 def restart():
@@ -615,39 +660,42 @@ while 1:
                 WHITE = (32, 32, 32)
                 BLACK = (0,0,0)
                 if curseur == 0:
-                    #rainbow
-                    startTime = time.time()
-                    while True:
-                        t1      = time.time()
-                        elapsed = t1 - startTime
-                        if elapsed > dot.duration:
-                            dot.strip.fill(0)
-                            dot.strip.show()
-                            break
-                        dot.rainbow_cycle(0)
-                    menu=1
-                if curseur == 1:
-                    dot.color_fill(RED, 0.5)
-                    dot.color_fill(YELLOW, 0.5)
-                    dot.color_fill(ORANGE, 0.5)
-                    dot.color_fill(GREEN, 0.5)
-                    dot.color_fill(TEAL, 0.5)
-                    dot.color_fill(CYAN, 0.5)
-                    dot.color_fill(BLUE, 0.5)
-                    dot.color_fill(PURPLE, 0.5)
-                    dot.color_fill(MAGENTA, 0.5)
-                    dot.color_fill(WHITE, 0.5)
-                    dot.color_fill(BLACK, 0.5)
-                    menu=1
-                if curseur == 2:
-                    dot.color_fill(MAGENTA, 1)
-                    menu=1
-                if curseur == 3:
-                    dot.color_fill(ORANGE, 1)
-                    menu=1
-                if curseur == 4:
+                    #colorcycle
+                    while not KEY_LEFT_PIN.is_pressed:
+                        ani.colorcycle.animate()
                     dot.color_fill(BLACK, 1)
-                    menu=1
+                if curseur == 1:
+                    #rainbow
+                    while not KEY_LEFT_PIN.is_pressed:
+                        ani.rainbow.animate()
+                    dot.color_fill(BLACK, 1)
+                if curseur == 2:
+                    #sparkle
+                    while not KEY_LEFT_PIN.is_pressed:
+                        ani.sparkle.animate()
+                    dot.color_fill(BLACK, 1)
+                if curseur == 3:
+                    #fill magenta
+                    while not KEY_LEFT_PIN.is_pressed:
+                        ani.solid.animate()
+                    dot.color_fill(BLACK, 1)
+                if curseur == 4:
+                    #rainbow sparkle
+                    while not KEY_LEFT_PIN.is_pressed:
+                        ani.rainbow_sparkle.animate()
+                    dot.color_fill(BLACK, 1)
+                if curseur == 5:
+                    #rainbow 2
+                    startTime = time.time()
+                    while not KEY_LEFT_PIN.is_pressed:
+                        # t1      = time.time()
+                        # elapsed = t1 - startTime
+                        # if elapsed > dot.duration:
+                        #     dot.strip.fill(0)
+                        #     dot.strip.show()
+                        #     break
+                        dot.rainbow_cycle(0)
+                    dot.color_fill(BLACK, 1)
             if page == 8:
                 #advanced menu
                 if curseur == 0:
@@ -733,7 +781,7 @@ while 1:
                     (dot.path,dot.imgNum) = FileSelect(dot.path,dot.imgNum)
                     dot.lightpaint = dot.loadImage(dot.path,dot.imgNum, dot.power_settings, dot.vflip, dot.direct)
                 if curseur == 1:
-                    #brighnesse
+                    #brightness
                     dot.power_value = stickBrightness(dot.power_value)
                     dot.power_settings = (int(dot.power_value), int(dot.power_value) + 100)    # Battery avg and peak current
                     dot.lightpaint = dot.loadImage(dot.path,dot.imgNum, dot.power_settings, dot.vflip, dot.direct) # Reload image with new brightness loadImage(index,power_var,vflip_var,direct_var)
